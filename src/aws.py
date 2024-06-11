@@ -1,22 +1,15 @@
-import boto3
-
 from json import dumps
 from typing import Any, Dict, Optional
 
+import boto3
 from botocore.client import Config
 
-from src.constants import (
-    AWS_REGION_EAST,
-    AWS_SERVICE_SQS,
-    AWS_SERVICE_S3,
-    BUCKET_NAME,
-    QUEUE_URL,
-)
+from src.constants import (AWS_REGION_EAST, AWS_SERVICE_S3, AWS_SERVICE_SQS,
+                           BUCKET_NAME, QUEUE_URL)
 from src.logger import logger
 
 
 class AWS:
-
     @staticmethod
     def get_client(service: str):
         return boto3.client(
@@ -35,7 +28,7 @@ class AWS:
                 MessageBody=dumps(data),
             )
             logger.info("Sending message: %s", str(response))
-            return response['MessageId']
+            return response["MessageId"]
         except Exception as e:
             logger.error("Error sending message: %s", str(e))
             return None

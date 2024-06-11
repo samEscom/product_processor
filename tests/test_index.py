@@ -1,19 +1,18 @@
-import boto3
 import json
-import requests
-import pytest
-from index import handler
-from tests.mocks.inputs import mock_data
-
-from .mocks.boto3_client import Boto3ClientMock
-
 from datetime import datetime
 from io import BytesIO
 
+import boto3
+import pytest
+import requests
 from botocore.response import StreamingBody
-from .mocks.requests.requests import RequestMock
-from src.constants import ECOMMERCE_API
 
+from index import handler
+from src.constants import ECOMMERCE_API
+from tests.mocks.inputs import mock_data
+
+from .mocks.boto3_client import Boto3ClientMock
+from .mocks.requests.requests import RequestMock
 
 file_upload = open("B2B_ART")
 file_s3 = bytes(file_upload.read(), "utf-8")
@@ -40,10 +39,7 @@ def test_send_message(monkeypatch):
     monkeypatch.setattr(requests, "session", mock_requests_session)
 
     response = handler(
-        event={
-            "update": True,
-            "file": "B2B_ART"
-        },
+        event={"update": True, "file": "B2B_ART"},
         context=None,
     )
 
@@ -55,30 +51,29 @@ def test_send_message(monkeypatch):
 
 
 def test_fail_send_message(monkeypatch):
-
     def mock_boto3client_success(_, **kwargs):
-        return Boto3ClientMock(_, mock_data={
-            "get_object": {
-                "raise_exception": False,
-                "response": {
-                    "ResponseMetadata": {
-                        "RequestId": "6BFC00970E62BC8F",
-                        "HTTPStatusCode": 200,
-                        "RetryAttempts": 1,
+        return Boto3ClientMock(
+            _,
+            mock_data={
+                "get_object": {
+                    "raise_exception": False,
+                    "response": {
+                        "ResponseMetadata": {
+                            "RequestId": "6BFC00970E62BC8F",
+                            "HTTPStatusCode": 200,
+                            "RetryAttempts": 1,
+                        },
+                        "LastModified": str(datetime(2024, 1, 29, 5, 39, 29)),
+                        "ContentLength": 58,
+                        "ETag": '"6299528715bad0e3510d1e4c4952ee7e"',
+                        "ContentType": "binary/octet-stream",
+                        "Metadata": {},
+                        "Body": raw_stream,
                     },
-                    "LastModified": str(datetime(2024, 1, 29, 5, 39, 29)),
-                    "ContentLength": 58,
-                    "ETag": '"6299528715bad0e3510d1e4c4952ee7e"',
-                    "ContentType": "binary/octet-stream",
-                    "Metadata": {},
-                    "Body": raw_stream,
                 },
+                "send_message": {"raise_exception": True, "response": None},
             },
-            "send_message": {
-                "raise_exception": True,
-                "response": None
-            },
-        })
+        )
 
     def mock_requests_session():
         return RequestMock(
@@ -95,10 +90,7 @@ def test_fail_send_message(monkeypatch):
     monkeypatch.setattr(requests, "session", mock_requests_session)
 
     response = handler(
-        event={
-            "update": True,
-            "file": "B2B_ART"
-        },
+        event={"update": True, "file": "B2B_ART"},
         context=None,
     )
 
@@ -114,7 +106,6 @@ def test_fail_send_message(monkeypatch):
 
 
 def test_fail_login(monkeypatch):
-
     def mock_requests_session():
         return RequestMock(
             mock_data={
@@ -130,9 +121,6 @@ def test_fail_login(monkeypatch):
 
     with pytest.raises(RuntimeError):
         handler(
-            event={
-                "update": True,
-                "file": "B2B_ART"
-            },
+            event={"update": True, "file": "B2B_ART"},
             context=None,
         )

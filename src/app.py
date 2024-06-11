@@ -15,11 +15,8 @@ def main(event, context) -> Dict:
     response = {
         "statusCode": 200,
         "body": dumps(
-            {
-                "messagesSend": product.messages_send,
-                "total": len(product.messages_send)
-            }
-        )
+            {"messagesSend": product.messages_send, "total": len(product.messages_send)}
+        ),
     }
     logger.info(response)
     return response

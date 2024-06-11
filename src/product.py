@@ -1,11 +1,12 @@
 import io
 import re
+from typing import Dict, List
+
 import requests
 
-from typing import Dict, List
 from src.aws import AWS
-from src.logger import logger
 from src.constants import ECOMMERCE_API, ECOMMERCE_PASS, ECOMMERCE_USER
+from src.logger import logger
 
 
 class Product:
@@ -49,9 +50,13 @@ class Product:
                 "stock_item": {
                     "min_sale_qty": int(float(line_product[45])),
                     "use_config_min_sale_qty": 1 if line_product[46] in "1" else 0,
-                    "use_config_qty_increments": True if line_product[54] in "1" else False,
+                    "use_config_qty_increments": True
+                    if line_product[54] in "1"
+                    else False,
                     "qty_increments": int(float(line_product[55])),
-                    "use_config_enable_qty_inc": True if line_product[46] in "1" else False,
+                    "use_config_enable_qty_inc": True
+                    if line_product[46] in "1"
+                    else False,
                     "enable_qty_increments": True if line_product[54] in "0" else False,
                     "use_config_backorders": False if line_product[43] in "1" else True,
                     "backorders": 1,
@@ -81,15 +86,11 @@ class Product:
 
         for item in self.data:
             payload = self.__create_payload(item)
-            message = self.aws.send_event_message(
-                data=payload
-            )
+            message = self.aws.send_event_message(data=payload)
 
-            self.messages_send.append({
-                "token": self.token,
-                "product": payload["sku"],
-                "messageId": message
-            })
+            self.messages_send.append(
+                {"token": self.token, "product": payload["sku"], "messageId": message}
+            )
 
     def __get_token(self) -> None:
         url = f"{ECOMMERCE_API}V1/admin/token"

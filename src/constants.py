@@ -7,9 +7,9 @@ AWS_SERVICE_DYNAMO = "dynamodb"
 
 BUCKET_NAME = "resumes-challenge"
 
-QUEUE_URL = 'https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue'
+QUEUE_URL = "https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue"
 
-#ECOMMERCE
+# ECOMMERCE
 
 ECOMMERCE_API = "https://ecommerce.com/rest/"
 
