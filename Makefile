@@ -44,10 +44,5 @@ tests:
 		--rootdir=. $${TEST};
 
 
-invoke-local:
-	@aws lambda invoke --function-name $${LAMBDA} --payload file://event.local.json --qualifier $${ENV} response.json;
-	@if [ -f response.json ]; then python -B -m json.tool response.json; fi;
-
-
 
 .PHONY: tests docs
