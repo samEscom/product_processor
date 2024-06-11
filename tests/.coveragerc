@@ -1,0 +1,13 @@
+[report]
+exclude_lines =
+    from
+    import
+skip_covered = True
+show_missing = True
+precision = 2
+fail_under = 50.00
+
+[run]
+omit =
+    .venv/**/*
+    tests/**/*
